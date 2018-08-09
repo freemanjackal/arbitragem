@@ -11,6 +11,7 @@ from math import log
 import requests
 import json
 from binance.client import Client
+import threading
 
 """
 headers= {'Accept': 'application/json', 'User-Agent': 'binance/python', 'X-MBX-APIKEY': '5ZskPFW3CeJEpbWItVTrPsy2ngSn3d1ued0cOH2kHipVuIhkMfETgxRN8Ljzrv9Q'}
@@ -39,17 +40,23 @@ def relax(u, v, graph, d, p):
     except:
         print('')
 
-def retrace_negative_loop(p, start):
+def retrace_negative_loop(p, start, d):
     arbitrageLoop = [start]
+    arbitragePrices = [d[start]]
     next_node = start
-    while True:
-        next_node = p[next_node]
-        if next_node not in arbitrageLoop:
-            arbitrageLoop.append(next_node)
-        else:
-            arbitrageLoop.append(next_node)
-            arbitrageLoop = arbitrageLoop[arbitrageLoop.index(next_node):]
-            return arbitrageLoop
+    try:
+        while True:
+            next_node = p[next_node]
+            if next_node not in arbitrageLoop:
+                arbitrageLoop.append(next_node)
+                arbitragePrices.append(d[next_node])
+            else:
+                arbitrageLoop.append(next_node)
+                arbitrageLoop = arbitrageLoop[arbitrageLoop.index(next_node):]
+                return arbitrageLoop, arbitragePrices
+    except Exception as e:
+        #print(e)
+        return
 
 def bellman_ford(graph, source):
     d, p = initialize(graph, source)
@@ -65,16 +72,25 @@ def bellman_ford(graph, source):
                 if d[v] > d[u] + graph[u][v]:
                     #relax(u, v, graph, d, p)
                     start = u
-                    return retrace_negative_loop(p, start)
+                    return retrace_negative_loop(p, start, d)
                     #return d,p,start
-            except:
-                print('')
+            except Exception as e:
+                print(str(e))
     #return d,p,start
     return None
 
 def test():
+    threading.Timer(50.0, test).start()
 
     graph = {
+        'ETH': {},
+        'BTC': {},
+        'EOS': {},
+        'USDT': {},
+        'XRP': {},
+        'ETC': {},
+        }
+    graphOriginal = {
         'ETH': {},
         'BTC': {},
         'EOS': {},
@@ -106,15 +122,26 @@ def test():
                 ticker = client.get_ticker(symbol=v+u)
                 try:
                     graph[v][u] = -log(float(ticker['bidPrice']))
+                    graphOriginal[v][u] = float(ticker['bidPrice'])
+
+                    graph[u][v] = -log(1/float(ticker['bidPrice']))
+                    graphOriginal[u][v] = 1/float(ticker['bidPrice'])
+
                 except  Exception as e:
                     print(str(e))
             except:
                 graph[v][u] = None
-        print('\n')
+        #print('\n')
 
     #d, p, _ = bellman_ford(graph, 'a')
-    res = bellman_ford(graph, 'ETH')
+    res, pre = bellman_ford(graph, 'ETH')
+
     print(res)
+    for i in range(len(res), 0, -1):
+        print(i-1)
+    for i in range(0,len(res)):
+        print(i)
+    #print(graphOriginal)
     """
     ETHBTC
     ETHEOS
@@ -172,4 +199,4 @@ def test():
         """
 
 if __name__ == '__main__':
-    test()
+     test()
