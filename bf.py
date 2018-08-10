@@ -36,9 +36,9 @@ def relax(u, v, graph, d, p):
                 d[v] = d[u] + graph[u][v]
                 p[v] = u
             except:
-                print('')
+                pass
     except:
-        print('')
+        pass
 
 def retrace_negative_loop(p, start, d):
     arbitrageLoop = [start]
@@ -75,7 +75,7 @@ def bellman_ford(graph, source):
                     return retrace_negative_loop(p, start, d)
                     #return d,p,start
             except Exception as e:
-                print(str(e))
+                pass
     #return d,p,start
     return None
 
@@ -113,7 +113,6 @@ def test():
     ETCUSDT = client.get_ticker(symbol='ETHBTC')
     """
     #ee = client.get_ticker(symbol='ETHBTCH')
-    graph['ETH']['BTC'] = 12
     print(graph)
     for v in graph.keys():
         for u in graph.keys():
@@ -128,7 +127,7 @@ def test():
                     graphOriginal[u][v] = 1/float(ticker['bidPrice'])
 
                 except  Exception as e:
-                    print(str(e))
+                    pass
             except:
                 graph[v][u] = None
         #print('\n')
@@ -137,10 +136,26 @@ def test():
     res, pre = bellman_ford(graph, 'ETH')
 
     print(res)
-    for i in range(len(res), 0, -1):
-        print(i-1)
-    for i in range(0,len(res)):
-        print(i)
+    print(graphOriginal)
+    value = 10
+    valueO = value
+    for i in range(len(res), 1, -1):
+        pre = graphOriginal[res[i-1]][res[i-2]]
+        value *= pre
+        value = value - value/100*0.1
+        print(value)
+
+    print("gains " + str(value - valueO))
+
+    value = 0.3
+    valueO = value
+    for i in range(len(res), 1, -1):
+        pre = graphOriginal[res[i-1]][res[i-2]]
+        value *= pre
+        print(value)
+
+    print("small gains  " + str(value - valueO))
+    print("after fees " + str((value - valueO) - (value - valueO)/100*0.1*(len(res)-1)))
     #print(graphOriginal)
     """
     ETHBTC

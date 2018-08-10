@@ -18,4 +18,4 @@ prices = client.get_all_tickers()
 
 btc = 0.02/0.07762800
 
-print(ticker)
+print(prices)
