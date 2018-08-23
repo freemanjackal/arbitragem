@@ -113,7 +113,7 @@ def test():
     ETCUSDT = client.get_ticker(symbol='ETHBTC')
     """
     #ee = client.get_ticker(symbol='ETHBTCH')
-    print(graph)
+    #print(graph)
     for v in graph.keys():
         for u in graph.keys():
             symb = str(v) + str(u)
@@ -136,26 +136,33 @@ def test():
     res, pre = bellman_ford(graph, 'ETH')
 
     print(res)
-    print(graphOriginal)
+    
+    #print(graphOriginal)
     value = 10
     valueO = value
     for i in range(len(res), 1, -1):
         pre = graphOriginal[res[i-1]][res[i-2]]
+        print(str(res[i-1])+str(res[i-2]))
         value *= pre
+        #print("before fee--" + str(value))
         value = value - value/100*0.1
-        print(value)
+        #print("after fee--" + str(value))
+        #print(value)
 
     print("gains " + str(value - valueO))
-
+    if (value - valueO) > 0:
+        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+    """
     value = 0.3
     valueO = value
     for i in range(len(res), 1, -1):
         pre = graphOriginal[res[i-1]][res[i-2]]
         value *= pre
-        print(value)
-
-    print("small gains  " + str(value - valueO))
-    print("after fees " + str((value - valueO) - (value - valueO)/100*0.1*(len(res)-1)))
+        #print(value)
+    """
+    
+    #print("small gains  " + str(value - valueO))
+    #print("after fees " + str((value - valueO) - (value - valueO)/100*0.1*(len(res)-1)))
     #print(graphOriginal)
     """
     ETHBTC
