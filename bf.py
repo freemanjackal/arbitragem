@@ -138,7 +138,7 @@ def test():
     print(res)
     
     #print(graphOriginal)
-    value = 10
+    value = 1
     valueO = value
     for i in range(len(res), 1, -1):
         pre = graphOriginal[res[i-1]][res[i-2]]
@@ -151,7 +151,7 @@ def test():
 
     print("gains " + str(value - valueO))
     if (value - valueO) > 0:
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
     """
     value = 0.3
     valueO = value
