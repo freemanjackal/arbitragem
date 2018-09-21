@@ -10,7 +10,6 @@ props to: http://hetland.org/coding/python/bellman_ford.py
 from math import log
 import requests
 import json
-from binance.client import Client
 import threading
 
 """
@@ -18,7 +17,6 @@ headers= {'Accept': 'application/json', 'User-Agent': 'binance/python', 'X-MBX-A
 tickers = requests.get("https://api.binance.com/api/v1/ticker/24hr", headers=headers)
 """
 
-client = Client('5ZskPFW3CeJEpbWItVTrPsy2ngSn3d1ued0cOH2kHipVuIhkMfETgxRN8Ljzrv9Q', 'tCsChD24BHmLjqSVcYFgY1TzPKLji9OAzVlJdQlSPhL7t2O8PDwWFhrkbhVqyuvA')
 
 def initialize(graph, source):
     d = {}
@@ -70,6 +68,7 @@ def bellman_ford(graph, source):
     print('ass')
     for u in graph:
         for v in graph[u]:
+            print("last relax")
             try:
                 if d[v] > d[u] + graph[u][v]:
                     #relax(u, v, graph, d, p)
@@ -86,29 +85,28 @@ def test():
     threading.Timer(50.0, test).start()
 
     graph = {
-        'eth': {},
-        'btc': {},
-        'brl': {},
+        'ETH': {},
+        'BTC': {},
+        'XRP': {},
         }
     graphOriginal = {
-        'eth': {},
-        'btc': {},
-        'brl': {},
+        'ETH': {},
+        'BTC': {},
+        'XRP': {},
         }
     
-
      
     for v in graph.keys():
         for u in graph.keys():
-            symb = str(v) + str(u)
             try:
-                ticker = requests.get("https://braziliex.com/api/v1/public/ticker/" + v+"_"+u).json()
+                payload = {'market': v+"-"+u}
+                ticker = requests.get("https://bittrex.com/api/v1.1/public/getticker/", params=payload).json()
                 try:
                     
-                        graph[v][u] = -log(float(ticker['highestBid']))
-                        graphOriginal[v][u] = float(ticker['highestBid'])
-                        graph[u][v] = -log(1/float(ticker['lowestAsk']))
-                        graphOriginal[u][v] = 1/float(ticker['lowestAsk'])
+                        graph[v][u] = -log(float(ticker['result']['Bid']))
+                        graphOriginal[v][u] = float(ticker['result']['Bid'])
+                        graph[u][v] = -log(1/float(ticker['result']['Ask']))
+                        graphOriginal[u][v] = 1/float(ticker['result']['Ask'])
 
 
                 except  Exception as e:
@@ -119,7 +117,7 @@ def test():
     #print(graphOriginal)
                 #graph[v][u] = None
     #d, p, _ = bellman_ford(graph, 'a')
-    res, pre = bellman_ford(graph, 'eth')
+    res, pre = bellman_ford(graph, 'ETH')
 
     value = 1
     valueO = value
@@ -129,14 +127,13 @@ def test():
             print(str(res[i-1])+str(res[i-2]))
             value *= pre
             #print("before fee--" + str(value))
-            value = value - value/100*0.4999
+            value = value - value/100*0.25
             #print("after fee--" + str(value))
             #print(value)
 
     print("gains " + str(value - valueO))
     if (value - valueO) > 0:
         print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        print(pre)
 
 
 if __name__ == '__main__':
