@@ -88,7 +88,7 @@ def test():
         'EOS': {},
         'USDT': {},
         'XRP': {},
-        'ETC': {},
+        
         }
     graphOriginal = {
         'ETH': {},
@@ -96,22 +96,10 @@ def test():
         'EOS': {},
         'USDT': {},
         'XRP': {},
-        'ETC': {},
+        
         }
     
-    """
-    ETHBTC = client.get_ticker(symbol='ETHBTC')
-    EOSETH = client.get_ticker(symbol='ETHBTC')
-    EOSBTC = client.get_ticker(symbol='ETHBTC')
-    EOSUSDT = client.get_ticker(symbol='ETHBTC')
-    ETHUSDT = client.get_ticker(symbol='ETHBTC')
-    XRPETH = client.get_ticker(symbol='ETHBTC')
-    XRPBTC = client.get_ticker(symbol='ETHBTC')
-    XRPUSDT = client.get_ticker(symbol='ETHBTC')
-    ETCETH = client.get_ticker(symbol='ETHBTC')
-    ETCBTC = client.get_ticker(symbol='ETHBTC')
-    ETCUSDT = client.get_ticker(symbol='ETHBTC')
-    """
+
     #ee = client.get_ticker(symbol='ETHBTCH')
     #print(graph)
     for v in graph.keys():

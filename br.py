@@ -10,15 +10,11 @@ props to: http://hetland.org/coding/python/bellman_ford.py
 from math import log
 import requests
 import json
-from binance.client import Client
 import threading
+from pydub import AudioSegment
+from pydub.playback import play
 
-"""
-headers= {'Accept': 'application/json', 'User-Agent': 'binance/python', 'X-MBX-APIKEY': '5ZskPFW3CeJEpbWItVTrPsy2ngSn3d1ued0cOH2kHipVuIhkMfETgxRN8Ljzrv9Q'}
-tickers = requests.get("https://api.binance.com/api/v1/ticker/24hr", headers=headers)
-"""
 
-client = Client('5ZskPFW3CeJEpbWItVTrPsy2ngSn3d1ued0cOH2kHipVuIhkMfETgxRN8Ljzrv9Q', 'tCsChD24BHmLjqSVcYFgY1TzPKLji9OAzVlJdQlSPhL7t2O8PDwWFhrkbhVqyuvA')
 
 def initialize(graph, source):
     d = {}
@@ -89,11 +85,13 @@ def test():
         'eth': {},
         'btc': {},
         'brl': {},
+        'xrp': {},
         }
     graphOriginal = {
         'eth': {},
         'btc': {},
         'brl': {},
+        'xrp': {},
         }
     
 
@@ -108,7 +106,9 @@ def test():
                         graph[v][u] = -log(float(ticker['highestBid']))
                         graphOriginal[v][u] = float(ticker['highestBid'])
                         graph[u][v] = -log(1/float(ticker['lowestAsk']))
+                        
                         graphOriginal[u][v] = 1/float(ticker['lowestAsk'])
+                        
 
 
                 except  Exception as e:
@@ -116,10 +116,9 @@ def test():
             except:
                 pass
 
-    #print(graphOriginal)
-                #graph[v][u] = None
+                    #graph[v][u] = None
     #d, p, _ = bellman_ford(graph, 'a')
-    res, pre = bellman_ford(graph, 'eth')
+    res, preco = bellman_ford(graph, 'eth')
 
     value = 1
     valueO = value
@@ -127,16 +126,21 @@ def test():
         for i in range(len(res), 1, -1):
             pre = graphOriginal[res[i-1]][res[i-2]]
             print(str(res[i-1])+str(res[i-2]))
+            print('value  ' + str(value))
+            print('pre  ' + str(pre))
             value *= pre
+            #print('value*=pre  ' + str(value))
             #print("before fee--" + str(value))
             value = value - value/100*0.4999
             #print("after fee--" + str(value))
-            #print(value)
+            print('value after fee' + str(value))
 
     print("gains " + str(value - valueO))
     if (value - valueO) > 0:
         print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        print(pre)
+        song = AudioSegment.from_mp3("alien.mp3")
+        play(song)
+        print(graphOriginal)
 
 
 if __name__ == '__main__':

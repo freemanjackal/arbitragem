@@ -11,6 +11,8 @@ from math import log
 import requests
 import json
 import threading
+from pydub import AudioSegment
+from pydub.playback import play
 
 """
 headers= {'Accept': 'application/json', 'User-Agent': 'binance/python', 'X-MBX-APIKEY': '5ZskPFW3CeJEpbWItVTrPsy2ngSn3d1ued0cOH2kHipVuIhkMfETgxRN8Ljzrv9Q'}
@@ -88,11 +90,13 @@ def test():
         'ETH': {},
         'BTC': {},
         'XRP': {},
+        'USDT': {},
         }
     graphOriginal = {
         'ETH': {},
         'BTC': {},
         'XRP': {},
+        'USDT': {},
         }
     
      
@@ -125,15 +129,19 @@ def test():
         for i in range(len(res), 1, -1):
             pre = graphOriginal[res[i-1]][res[i-2]]
             print(str(res[i-1])+str(res[i-2]))
+            print('value  ' + str(value))
+            print('pre  ' + str(pre))
             value *= pre
             #print("before fee--" + str(value))
             value = value - value/100*0.25
             #print("after fee--" + str(value))
-            #print(value)
+            print('value after fee' + str(value))
 
     print("gains " + str(value - valueO))
     if (value - valueO) > 0:
         print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        song = AudioSegment.from_mp3("alien.mp3")
+        play(song)
 
 
 if __name__ == '__main__':
